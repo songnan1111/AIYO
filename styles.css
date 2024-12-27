@@ -1045,8 +1045,8 @@ body {
     }
     
     .feature-gallery img:hover {
-        transform: scale(1.1);
-    }
+    transform: scale(1.1);
+}
 }
 
 /* 添加悬停效果区域片样式 */
@@ -1310,7 +1310,7 @@ body {
         position: static;
         background: none;
         box-shadow: none;
-        opacity: 1;
+    opacity: 1;
         visibility: visible;
         transform: none;
         min-width: auto;

@@ -125,7 +125,7 @@ window.addEventListener('load', () => {
     document.body.classList.add('loaded');
 });
 
-// 效果展示区翻页功能
+// 效果展示区滚动功能
 document.addEventListener('DOMContentLoaded', function() {
     const sliders = document.querySelectorAll('.showcase-slider');
     
@@ -135,70 +135,90 @@ document.addEventListener('DOMContentLoaded', function() {
         const prev = slider.querySelector('.prev');
         const next = slider.querySelector('.next');
         
-        // 复制项目用于无缝循环
-        const clonedItems = Array.from(items).map(item => item.cloneNode(true));
-        clonedItems.forEach(clone => track.appendChild(clone));
+        let currentPosition = 0;
+        const itemWidth = items[0].offsetWidth + parseInt(getComputedStyle(items[0]).marginRight);
+        const visibleItems = Math.floor(slider.offsetWidth / itemWidth);
         
-        const itemWidth = items[0].offsetWidth + 20; // 包含margin-right
-        const totalWidth = itemWidth * items.length;
-        const visibleWidth = slider.offsetWidth;
-        const scrollStep = Math.floor(visibleWidth / itemWidth) * itemWidth;
+        // 动态复制元素用于无缝循环
+        function cloneItems() {
+            const neededClones = Math.min(items.length, visibleItems + 1);
+            
+            for (let i = 0; i < neededClones; i++) {
+                const clone = items[i].cloneNode(true);
+                track.appendChild(clone);
+            }
+        }
         
-        let isAnimating = false;
-        let currentScroll = 0;
-        
-        // 初始化自动滚动
-        function initAutoScroll() {
+        // 初始化滚动
+        function initScroll() {
             track.style.transform = 'translateX(0)';
-            track.style.transition = 'none';
-            track.style.animation = 'autoScroll 120s linear infinite';
+            track.style.transition = 'transform 0.5s ease';
+            currentPosition = 0;
         }
         
         // 处理翻页
         function handleScroll(direction) {
-            if (isAnimating) return;
-            isAnimating = true;
-            
-            // 暂停自动滚动
+            // 暂停自动滚动动画
             track.style.animation = 'none';
             
-            // 获取当前位置
-            const matrix = new WebKitCSSMatrix(getComputedStyle(track).transform);
-            currentScroll = matrix.m41;
+            const maxScroll = -(items.length * itemWidth);
+            const scrollAmount = direction === 'next' ? -itemWidth * visibleItems : itemWidth * visibleItems;
             
-            // 计算目标位置
-            let targetScroll = currentScroll + (direction === 'prev' ? scrollStep : -scrollStep);
+            currentPosition += scrollAmount;
             
-            // 处理边界情况
-            if (direction === 'prev' && targetScroll > 0) {
-                // 如果向前滚动超过起点，立即跳转到末尾
+            // 处理循环
+            if (direction === 'next' && currentPosition <= maxScroll) {
+                currentPosition = 0;
                 track.style.transition = 'none';
-                track.style.transform = `translateX(${-totalWidth}px)`;
-                track.offsetHeight; // 触发重排
-                targetScroll = -totalWidth + scrollStep;
-            } else if (direction === 'next' && targetScroll < -totalWidth) {
-                // 如果向后滚动超过终点，立即跳转到起点
+                track.style.transform = `translateX(0)`;
+                // 触发重排以确保过渡效果正常
+                track.offsetHeight;
+            } else if (direction === 'prev' && currentPosition > 0) {
+                currentPosition = maxScroll + itemWidth * visibleItems;
                 track.style.transition = 'none';
-                track.style.transform = 'translateX(0)';
-                track.offsetHeight; // 触发重排
-                targetScroll = -scrollStep;
+                track.style.transform = `translateX(${currentPosition}px)`;
+                track.offsetHeight;
             }
             
-            // 应用过渡效果
             track.style.transition = 'transform 0.5s ease';
-            track.style.transform = `translateX(${targetScroll}px)`;
+            track.style.transform = `translateX(${currentPosition}px)`;
             
             // 翻页完成后恢复自动滚动
             setTimeout(() => {
-                track.style.transition = 'none';
-                track.style.animation = 'autoScroll 120s linear infinite';
-                // 计算动画延迟，使其从当前位置继续
-                track.style.animationDelay = `${targetScroll / totalWidth * 120}s`;
-                isAnimating = false;
+                const isMobile = window.innerWidth <= 768;
+                const scrollDuration = isMobile ? '60s' : '120s';
+                track.style.animation = `autoScroll ${scrollDuration} linear infinite`;
+                track.style.animationDelay = `${-currentPosition / maxScroll * parseFloat(scrollDuration)}s`;
             }, 500);
         }
         
-        // 绑定事件
+        // 处理图片懒加载
+        function handleLazyLoad() {
+            const options = {
+                root: null,
+                rootMargin: '50px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                        }
+                        observer.unobserve(img);
+                    }
+                });
+            }, options);
+            
+            track.querySelectorAll('img[loading="lazy"]').forEach(img => {
+                observer.observe(img);
+            });
+        }
+        
+        // 绑定翻页事件
         prev.addEventListener('click', () => handleScroll('prev'));
         next.addEventListener('click', () => handleScroll('next'));
         
@@ -211,12 +231,32 @@ document.addEventListener('DOMContentLoaded', function() {
             track.style.animationPlayState = 'running';
         });
         
-        // 动画结束时重置
-        track.addEventListener('animationend', () => {
-            initAutoScroll();
-        });
-        
         // 初始化
-        initAutoScroll();
+        if ('IntersectionObserver' in window) {
+            handleLazyLoad();
+        }
+        cloneItems();
+        initScroll();
+        
+        // 响应式处理
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                // 重新计算尺寸
+                const newItemWidth = items[0].offsetWidth + parseInt(getComputedStyle(items[0]).marginRight);
+                const newVisibleItems = Math.floor(slider.offsetWidth / newItemWidth);
+                
+                // 重置滚动条
+                track.innerHTML = '';
+                items.forEach(item => track.appendChild(item.cloneNode(true)));
+                cloneItems();
+                initScroll();
+                
+                if ('IntersectionObserver' in window) {
+                    handleLazyLoad();
+                }
+            }, 250);
+        });
     });
 }); 
