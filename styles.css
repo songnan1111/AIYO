@@ -1052,4 +1052,394 @@ body {
 /* 添加悬停效果区域片样式 */
 .hero-background:hover .slider-track img:hover ~ .hero-overlay {
     opacity: 0;
+}
+
+/* 响应式设计 */
+/* 大屏幕设备 (1200px 以上) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+
+    .feature-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .workflow-steps {
+        flex-direction: row;
+        gap: 4rem;
+    }
+
+    .step {
+        flex: 1;
+    }
+}
+
+/* 中等屏幕设备 (992px - 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .container {
+        max-width: 960px;
+    }
+
+    .feature-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+
+    .animate-title {
+        font-size: 5rem;
+    }
+
+    .feature-image-container {
+        height: 250px;
+    }
+}
+
+/* 平板设备 (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .container {
+        max-width: 720px;
+    }
+
+    .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .animate-title {
+        font-size: 4rem;
+    }
+
+    .subtitle {
+        font-size: 1.8rem;
+    }
+
+    .feature-image-container {
+        height: 220px;
+    }
+
+    .workflow-steps {
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    .step {
+        flex: 1;
+        padding: 1.5rem;
+    }
+
+    .feature-gallery {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .feature-gallery img {
+        height: 300px;
+    }
+
+    .footer-sections {
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    .footer-links-container {
+        gap: 3rem;
+    }
+}
+
+/* 手机设备 (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    .container {
+        max-width: 540px;
+    }
+
+    .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .animate-title {
+        font-size: 3.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.5rem;
+    }
+
+    .feature-image-container {
+        height: 200px;
+    }
+
+    .workflow-steps {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .feature-gallery {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .feature-gallery img {
+        height: 250px;
+    }
+
+    .footer-sections {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .footer-links-container {
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    .showcase-slider {
+        height: 250px;
+    }
+
+    .showcase-item img {
+        height: 200px;
+    }
+}
+
+/* 小型手机设备 (575px 以下) */
+@media (max-width: 575px) {
+    .container {
+        padding: 0 1rem;
+    }
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .animate-title {
+        font-size: 3rem;
+    }
+
+    .subtitle {
+        font-size: 1.3rem;
+    }
+
+    .feature-image-container {
+        height: 180px;
+    }
+
+    .workflow-steps {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .feature-gallery {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .feature-gallery img {
+        height: 200px;
+    }
+
+    .footer-sections {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .footer-links-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .showcase-slider {
+        height: 200px;
+    }
+
+    .showcase-item img {
+        height: 150px;
+    }
+
+    .showcase-item h3 {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .feature-content h2 {
+        font-size: 2rem;
+    }
+
+    .feature-content p {
+        font-size: 1rem;
+    }
+
+    .navbar .container {
+        padding: 0.5rem 1rem;
+    }
+
+    .logo {
+        font-size: 1.8rem;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .dropdown-content {
+        position: static;
+        background: none;
+        box-shadow: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        min-width: auto;
+        padding: 0.5rem 0;
+    }
+
+    .dropdown-content a {
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* 导航栏响应式菜单按钮 */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background: var(--primary-color);
+    margin: 5px 0;
+    transition: all 0.3s ease;
+}
+
+.menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* 平板和手机设备的横向滚动优化 */
+@media (max-width: 991px) {
+    .hero-slider {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .showcase-track {
+        touch-action: pan-x;
+    }
+
+    .showcase-nav {
+        width: 40px;
+        height: 40px;
+    }
+
+    .showcase-nav.prev {
+        left: 10px;
+    }
+
+    .showcase-nav.next {
+        right: 10px;
+    }
+}
+
+/* 针对不同设备的图片悬停效果优化 */
+@media (hover: hover) {
+    .showcase-item:hover img {
+        transform: scale(1.5);
+    }
+}
+
+@media (hover: none) {
+    .showcase-item:active img {
+        transform: scale(1.2);
+    }
+}
+
+/* 针对横屏模式的优化 */
+@media (orientation: landscape) and (max-width: 991px) {
+    .hero {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .hero-slider {
+        height: 33.33vh;
+    }
+
+    .feature-image-container {
+        height: 200px;
+    }
+
+    .workflow-steps {
+        flex-direction: row;
+    }
+}
+
+/* 针对高分辨率屏幕的优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .feature-icon {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
+
+/* 针对折叠屏设备的优化 */
+@media (max-width: 350px) {
+    .container {
+        padding: 0 0.8rem;
+    }
+
+    .animate-title {
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+    }
+
+    .feature-image-container {
+        height: 160px;
+    }
+
+    .showcase-slider {
+        height: 180px;
+    }
+
+    .showcase-item img {
+        height: 130px;
+    }
 } 
