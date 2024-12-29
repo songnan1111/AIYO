@@ -238,71 +238,222 @@ document.addEventListener('DOMContentLoaded', function() {
             // 创建新窗口并打开图片
             const imgUrl = this.src;
             const imgTitle = this.alt || '图片预览';
-            const newWindow = window.open('', '_blank');
             
-            // 设置新窗口的内容
-            newWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>${imgTitle}</title>
-                    <style>
-                        body {
-                            margin: 0;
-                            padding: 20px;
-                            background: #000;
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            min-height: 100vh;
-                            font-family: 'Noto Sans SC', sans-serif;
+            // 检测是否为移动设备
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // 移动端：创建全屏遮罩层
+                const overlay = document.createElement('div');
+                overlay.className = 'image-preview-overlay';
+                
+                const content = `
+                    <div class="mobile-image-preview">
+                        <div class="image-title">${imgTitle}</div>
+                        <div class="image-container">
+                            <img src="${imgUrl}" alt="${imgTitle}">
+                        </div>
+                        <button class="close-button">关闭</button>
+                    </div>
+                `;
+                
+                overlay.innerHTML = content;
+                document.body.appendChild(overlay);
+                document.body.style.overflow = 'hidden'; // 防止背景滚动
+                
+                // 添加样式
+                const style = document.createElement('style');
+                style.textContent = `
+                    .image-preview-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0, 0, 0, 0.9);
+                        z-index: 10000;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    .mobile-image-preview {
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 20px;
+                        box-sizing: border-box;
+                    }
+                    .image-title {
+                        color: white;
+                        font-size: 16px;
+                        margin-bottom: 20px;
+                        text-align: center;
+                        width: 100%;
+                        padding: 0 40px;
+                    }
+                    .image-container {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        max-height: 80vh;
+                    }
+                    .image-container img {
+                        max-width: 100%;
+                        max-height: 100%;
+                        object-fit: contain;
+                        touch-action: pinch-zoom;
+                    }
+                    .close-button {
+                        position: fixed;
+                        bottom: 20px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: rgba(255, 255, 255, 0.2);
+                        border: none;
+                        color: white;
+                        padding: 12px 30px;
+                        border-radius: 25px;
+                        font-size: 16px;
+                        cursor: pointer;
+                        z-index: 10001;
+                        -webkit-tap-highlight-color: transparent;
+                    }
+                    .close-button:active {
+                        background: rgba(255, 255, 255, 0.3);
+                    }
+                    @media (orientation: landscape) {
+                        .mobile-image-preview {
+                            flex-direction: row;
+                            padding: 10px;
                         }
                         .image-title {
-                            color: white;
-                            font-size: 20px;
-                            margin-bottom: 20px;
-                            text-align: center;
-                        }
-                        .image-container {
-                            max-width: 90vw;
-                            max-height: 80vh;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                        }
-                        img {
-                            max-width: 100%;
-                            max-height: 100%;
-                            object-fit: contain;
+                            writing-mode: vertical-rl;
+                            margin-bottom: 0;
+                            margin-right: 20px;
+                            padding: 0;
                         }
                         .close-button {
-                            position: fixed;
-                            top: 20px;
                             right: 20px;
-                            background: rgba(255, 255, 255, 0.2);
-                            border: none;
-                            color: white;
-                            padding: 10px 20px;
-                            border-radius: 5px;
-                            cursor: pointer;
-                            font-size: 16px;
-                            transition: background 0.3s ease;
+                            bottom: auto;
+                            top: 50%;
+                            left: auto;
+                            transform: translateY(-50%);
                         }
-                        .close-button:hover {
-                            background: rgba(255, 255, 255, 0.3);
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="image-title">${imgTitle}</div>
-                    <div class="image-container">
-                        <img src="${imgUrl}" alt="${imgTitle}">
-                    </div>
-                    <button class="close-button" onclick="window.close()">关闭</button>
-                </body>
-                </html>
-            `);
-            newWindow.document.close();
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // 添加关闭事件
+                const closeButton = overlay.querySelector('.close-button');
+                const closePreview = () => {
+                    document.body.removeChild(overlay);
+                    document.body.style.overflow = '';
+                };
+                
+                closeButton.addEventListener('click', closePreview);
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        closePreview();
+                    }
+                });
+                
+                // 添加触摸手势支持
+                let touchStartY = 0;
+                overlay.addEventListener('touchstart', (e) => {
+                    touchStartY = e.touches[0].clientY;
+                });
+                
+                overlay.addEventListener('touchmove', (e) => {
+                    const touchDiff = e.touches[0].clientY - touchStartY;
+                    if (Math.abs(touchDiff) > 100) {
+                        closePreview();
+                    }
+                });
+            } else {
+                // 桌面端：打开新窗口
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>${imgTitle}</title>
+                        <style>
+                            body {
+                                margin: 0;
+                                padding: 20px;
+                                background: #000;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                min-height: 100vh;
+                                font-family: 'Noto Sans SC', sans-serif;
+                            }
+                            .image-title {
+                                color: white;
+                                font-size: 20px;
+                                margin-bottom: 20px;
+                                text-align: center;
+                            }
+                            .image-container {
+                                max-width: 90vw;
+                                max-height: 80vh;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                            }
+                            img {
+                                max-width: 100%;
+                                max-height: 100%;
+                                object-fit: contain;
+                            }
+                            .close-button {
+                                position: fixed;
+                                top: 20px;
+                                right: 20px;
+                                background: rgba(255, 255, 255, 0.2);
+                                border: none;
+                                color: white;
+                                padding: 10px 20px;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                font-size: 16px;
+                                transition: background 0.3s ease;
+                            }
+                            .close-button:hover {
+                                background: rgba(255, 255, 255, 0.3);
+                            }
+                            @media (max-width: 768px) {
+                                body {
+                                    padding: 10px;
+                                }
+                                .image-title {
+                                    font-size: 16px;
+                                }
+                                .close-button {
+                                    padding: 8px 16px;
+                                    font-size: 14px;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="image-title">${imgTitle}</div>
+                        <div class="image-container">
+                            <img src="${imgUrl}" alt="${imgTitle}">
+                        </div>
+                        <button class="close-button" onclick="window.close()">关闭</button>
+                    </body>
+                    </html>
+                `);
+                newWindow.document.close();
+            }
         });
     });
 }); 
