@@ -456,4 +456,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+});
+
+// 添加微信二维码弹窗功能
+function showWechatQR() {
+    const modal = document.getElementById('wechat-modal');
+    modal.style.display = 'block';
+}
+
+// 关闭弹窗
+document.querySelector('.close-modal').addEventListener('click', function() {
+    document.getElementById('wechat-modal').style.display = 'none';
+});
+
+// 点击弹窗外部关闭
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('wechat-modal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
 }); 

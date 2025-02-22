@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIK - ComfyUI整合包 | 智能图像生成解决方案</title>
+    <title>AIYO - ComfyUI整合包 | 智能图像生成解决方案</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="container">
             <a href="#" class="logo-link">
-                <div class="logo">AIK</div>
+                <div class="logo">
+                    <span class="logo-text">AIYO</span>
+                    <span class="logo-tag">AI创作引擎</span>
+                </div>
             </a>
             <ul class="nav-links">
                 <li><a href="#" class="active">首页</a></li>
@@ -30,7 +33,7 @@
                 </li>
                 <li><a href="#showcase">案例展示</a></li>
                 <li><a href="#download" class="download-link">下载试用</a></li>
-                <li><a href="#contact">联系我们</a></li>
+                <li><a href="#" class="contact-link" onclick="showWechatQR()">联系我们</a></li>
             </ul>
         </div>
     </nav>
@@ -110,11 +113,14 @@
             <div class="hero-overlay"></div>
         </div>
         <div class="container hero-content">
-            <h1 class="animate-title">AIK</h1>
+            <h1 class="animate-title">
+                <span class="gradient-text">AIYO</span>
+                <span class="subtitle-text">让创作更简单</span>
+            </h1>
             <div class="slogan-container">
-                <p class="subtitle current">智能创作引擎，开启无限可能</p>
-                <p class="subtitle">引领视觉革命，创造无限精彩</p>
-                <p class="subtitle">一键生成，释放创意潜能</p>
+                <p class="subtitle current">一键生成，释放创意无限可能</p>
+                <p class="subtitle">AI驱动创作，打造专业级视觉作品</p>
+                <p class="subtitle">智能高效，为创作赋能</p>
             </div>
             <div class="hero-description">
                 <p>基于ComfyUI框架优化，提供便捷高效的图片生成服务</p>
@@ -632,7 +638,15 @@
         <div class="container">
             <h2>立即开始使用</h2>
             <p>体验AI创作的无限可能</p>
-            <a href="#" class="download-button">下载AIk</a>
+            <div class="download-options">
+                <a href="#" class="download-button">下载AIYO</a>
+                <span class="download-divider">或</span>
+                <button class="contact-button" onclick="showWechatQR()">
+                    <i class="icon-wechat"></i>
+                    联系客服
+                </button>
+            </div>
+            <p class="contact-tip">下载遇到问题？添加客服微信获取帮助</p>
         </div>
     </section>
 
@@ -642,12 +656,24 @@
             <div class="footer-content">
                 <div class="footer-sections">
                     <div class="footer-section main-info">
-                        <div class="footer-logo">AIK</div>
+                        <div class="footer-logo">
+                            <span class="logo-text">AIYO</span>
+                            <span class="logo-tag">AI创作引擎</span>
+                        </div>
                         <p class="footer-description">打造下一代AI图像生成工具</p>
                         <div class="footer-social">
-                            <a href="#" class="social-link">微信</a>
-                            <a href="#" class="social-link">微博</a>
-                            <a href="#" class="social-link">抖音</a>
+                            <a href="#" class="social-link" onclick="showWechatQR()">
+                                <i class="icon-wechat"></i>
+                                <span>微信</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="icon-weibo"></i>
+                                <span>微博</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="icon-douyin"></i>
+                                <span>抖音</span>
+                            </a>
                         </div>
                     </div>
                     <div class="footer-links-container">
@@ -663,8 +689,8 @@
                         <div class="footer-section">
                             <h4>商务合作</h4>
                             <ul class="footer-links">
-                                <li><a href="#business">商务咨询</a></li>
-                                <li><a href="#partner">渠道合作</a></li>
+                                <li><a href="#" onclick="showWechatQR()">商务咨询</a></li>
+                                <li><a href="#" onclick="showWechatQR()">渠道合作</a></li>
                                 <li><a href="#media">媒体报道</a></li>
                                 <li><a href="#join">加入我们</a></li>
                             </ul>
@@ -679,13 +705,24 @@
                         <a href="#copyright">版权声明</a>
                     </div>
                     <div class="footer-copyright">
-                        <p>© 2024 AIK. All rights reserved.</p>
+                        <p>© 2024 AIYO Technology. All rights reserved.</p>
                         <p>ICP备案号：<a href="#icp">京ICP备XXXXXXXX号</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- 添加微信二维码弹窗 -->
+    <div id="wechat-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>扫码添加微信</h3>
+            <p>微信号：Aiyo_pic</p>
+            <!-- 这里需要替换成实际的二维码图片 -->
+            <img src="images/qrcode.jpg" alt="微信二维码" class="qr-code">
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script src="script.js"></script>
